@@ -1,12 +1,3 @@
-<!--<script lang="ts">-->
-
-<!--</script>-->
-<!--<div class="flex flex-wrap">-->
-<!--  <h1 class="text-3xl w-full">Track my progress completing 500 miles of cycling in March 2025</h1>-->
-<!--  <p>Hi I am raising money for Cancer Research UK by challenging myself to cycle over 500 miles in March 2025</p>-->
-<!--  <p>Hi I am raising money for Cancer Research UK by challenging myself to cycle over 500 miles in March 2025</p>-->
-<!--</div>-->
-
 <script lang="ts">
   import { onMount } from 'svelte';
 
