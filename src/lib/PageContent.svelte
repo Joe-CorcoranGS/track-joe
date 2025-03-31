@@ -9,6 +9,7 @@
     type: string;
     start_date: string;
     average_speed: number;
+    max_speed: number;
   };
 
   let activities: Activity[] = $state([]);
@@ -34,7 +35,6 @@
       }
 
       const data: Activity[] = await response.json();
-
       activities = data.filter(activity => activity.type === 'Ride');
 
       totalDistance = activities.reduce((sum, activity) => sum + activity.distance, 0);
@@ -130,11 +130,14 @@
       {#each activities as activity}
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-semibold">{activity.name}</h3>
-          <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-2 text-sm text-gray-600">
+          <div class="grid grid-cols-3 md:grid-cols-7 gap-2 mt-2 text-sm text-gray-600">
             <div>{formatDate(activity.start_date)}</div>
             <div class="col-span-2">🚴‍♂️ {distanceInMiles(activity.distance)} ({distanceInKm(activity.distance)})</div>
             <div class="col-span-2">
-              🔥{speedInMph(activity.average_speed)} ({speedInKmh(activity.average_speed)})
+              🔥Av. speed {speedInMph(activity.average_speed)} ({speedInKmh(activity.average_speed)})
+            </div>
+            <div class="col-span-2">
+              🔥Max speed {speedInMph(activity.max_speed)} ({speedInKmh(activity.max_speed)})
             </div>
             <div>⏱️ {formatTime(activity.moving_time)}</div>
           </div>
