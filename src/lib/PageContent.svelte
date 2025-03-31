@@ -22,7 +22,7 @@
   const fetchActivities = async () => {
     try {
       const marchStart = new Date('2025-03-01').getTime() / 1000;
-      const marchEnd = new Date('2025-03-31').getTime() / 1000;
+      const marchEnd = new Date('2025-04-01').getTime() / 1000;
 
       const response = await fetch(`https://track-joe.josephcorcoran.co.uk/api/strava.php?route=activities&after=${marchStart}&before=${marchEnd}`, {
         method: 'GET',
@@ -71,7 +71,7 @@
   }
 
   const slowlyIncrement = (startValue: number, endValue: number, duration: number, callback: (num: number) => void) => {
-    const stepTime = 16; // ~60fps
+    const stepTime = 16;
     const steps = duration / stepTime;
     const increment = (endValue - startValue) / steps;
 
@@ -83,7 +83,7 @@
       stepCount++;
 
       if (stepCount >= steps) {
-        currentValue = endValue; // Ensure it hits the precise endValue
+        currentValue = endValue;
         clearInterval(intervalId);
       }
 
@@ -93,7 +93,7 @@
 
   $effect(() => {
     slowlyIncrement(0, completedPercentage, 2000, (num) => {
-      animateCompletedPercentage = num;
+      animateCompletedPercentage = Math.min(num, 100);
     })
   })
 

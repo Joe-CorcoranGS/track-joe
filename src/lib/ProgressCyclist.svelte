@@ -1,7 +1,6 @@
 <script lang="ts">
     let trackPathElement: SVGPathElement | undefined = $state();
-    let heightOnLine = $state(0);
-    let distAlongLine = $state(0);
+    let heightAndDist = $state({height: 0, dist: 0});
 
     const { completedPercentage = 0 } = $props<{completedPercentage: number}>()
 
@@ -13,8 +12,9 @@
     }
 
     $effect(() => {
-        heightOnLine = getHeightAtPercentage(completedPercentage);
-        distAlongLine = (completedPercentage / 100) * 200;
+        const heightOnLine = getHeightAtPercentage(completedPercentage);
+        const distAlongLine = (completedPercentage / 100) * 200;
+        heightAndDist = {height: heightOnLine, dist: distAlongLine};
     })
 
 </script>
@@ -28,7 +28,7 @@
                 stroke-width="1"
                 fill="none"
         />
-        <circle r="5" fill="#3b82f6" cx={distAlongLine} cy={heightOnLine} />
+        <circle r="5" fill="#3b82f6" cx={heightAndDist.dist} cy={heightAndDist.height} />
         <text font-style="italic" fill="#000" font-size="5" x="0" y="39">Start</text>
         <text font-style="italic" fill="#000" font-size="5" x="175" y="5">Finish 🏁</text>
     </svg>
