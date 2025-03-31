@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import ProgressCyclistSvelte from "./ProgressCyclist.svelte";
 
   type Activity = {
     name: string;
@@ -10,11 +11,13 @@
     average_speed: number;
   };
 
-  let activities: Activity[] = [];
-  let isLoading = true;
-  let error: string | null = null;
-  let totalDistance = 0;
-  let totalTime = 0;
+  let activities: Activity[] = $state([]);
+  let isLoading = $state(true);
+  let error: string | null = $state(null);
+  let totalDistance = $state(0);
+  let totalTime = $state(0);
+  let completedPercentage = $state(0);
+  let animateCompletedPercentage = $state(0);
 
   const fetchActivities = async () => {
     try {
@@ -36,6 +39,10 @@
 
       totalDistance = activities.reduce((sum, activity) => sum + activity.distance, 0);
       totalTime = activities.reduce((sum, activity) => sum + activity.moving_time, 0);
+
+      const distanceInMiles = totalDistance / 1609.34;
+
+      completedPercentage = distanceInMiles / 500 * 100;
 
     } catch (err) {
       error = err instanceof Error ? err.message : 'An error occurred';
@@ -62,6 +69,34 @@
   const formatDate = (dateString: string)  => {
     return new Date(dateString).toLocaleDateString();
   }
+
+  const slowlyIncrement = (startValue: number, endValue: number, duration: number, callback: (num: number) => void) => {
+    const stepTime = 16; // ~60fps
+    const steps = duration / stepTime;
+    const increment = (endValue - startValue) / steps;
+
+    let currentValue = startValue;
+    let stepCount = 0;
+
+    const intervalId = setInterval(() => {
+      currentValue += increment;
+      stepCount++;
+
+      if (stepCount >= steps) {
+        currentValue = endValue; // Ensure it hits the precise endValue
+        clearInterval(intervalId);
+      }
+
+      callback(currentValue);
+    }, stepTime);
+  }
+
+  $effect(() => {
+    slowlyIncrement(0, completedPercentage, 2000, (num) => {
+      animateCompletedPercentage = num;
+    })
+  })
+
 </script>
 
 <div class="max-w-2xl mx-auto p-4">
@@ -72,7 +107,8 @@
     </div>
   </a>
   <a class="text-blue-500 text-sm mt-1 text-center w-full block" href="https://fundraise.cancerresearchuk.org/page/josephs-giving-page-612" target="_blank">Full fundraiser page here</a>
-    {#if isLoading}
+  <ProgressCyclistSvelte completedPercentage={animateCompletedPercentage} />
+  {#if isLoading}
     <p class="text-gray-600 mt-2">Loading activities...</p>
   {:else if error}
     <p class="text-red-500">{error}</p>
@@ -90,14 +126,13 @@
         </div>
       </div>
     </div>
-
     <div class="space-y-4">
       {#each activities as activity}
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-semibold">{activity.name}</h3>
           <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-2 text-sm text-gray-600">
             <div>{formatDate(activity.start_date)}</div>
-            <div class="col-span-2">🚴‍♂️ {distanceInMiles(activity.distance)} ({distanceInKm(totalDistance)})</div>
+            <div class="col-span-2">🚴‍♂️ {distanceInMiles(activity.distance)} ({distanceInKm(activity.distance)})</div>
             <div class="col-span-2">
               🔥{speedInMph(activity.average_speed)} ({speedInKmh(activity.average_speed)})
             </div>
