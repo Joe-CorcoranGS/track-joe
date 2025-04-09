@@ -23,7 +23,7 @@
     const activities: Activity[] = marchActivites;
 
     const fetchActivities = async () => {
-        try {
+        // try {
             // const marchStart = new Date('2025-03-01').getTime() / 1000;
             // const marchEnd = new Date('2025-04-01').getTime() / 1000;
             //
@@ -46,11 +46,11 @@
 
             completedPercentage = distanceInMiles / 500 * 100;
 
-        } catch (err) {
-            error = err instanceof Error ? err.message : 'An error occurred';
-        } finally {
-            isLoading = false;
-        }
+        // } catch (err) {
+        //     error = err instanceof Error ? err.message : 'An error occurred';
+        // } finally {
+        //     isLoading = false;
+        // }
     }
 
     onMount(() => {
