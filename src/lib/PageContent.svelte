@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onMount} from 'svelte';
     import ProgressCyclistSvelte from "./ProgressCyclist.svelte";
+    import {marchActivites} from "./activitiesMarch";
 
     type Activity = {
         name: string;
@@ -12,30 +13,31 @@
         max_speed: number;
     };
 
-    let activities: Activity[] = $state([]);
-    let isLoading = $state(true);
+    let isLoading = $state(false);
     let error: string | null = $state(null);
     let totalDistance = $state(0);
     let totalTime = $state(0);
     let completedPercentage = $state(0);
     let animateCompletedPercentage = $state(0);
 
+    const activities: Activity[] = marchActivites;
+
     const fetchActivities = async () => {
         try {
-            const marchStart = new Date('2025-03-01').getTime() / 1000;
-            const marchEnd = new Date('2025-04-01').getTime() / 1000;
-
-            const response = await fetch(`https://track-joe.josephcorcoran.co.uk/api/strava.php?route=activities&after=${marchStart}&before=${marchEnd}`, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch activities');
-            }
-
-            const data: Activity[] = await response.json();
-            activities = data.filter(activity => activity.type === 'Ride');
+            // const marchStart = new Date('2025-03-01').getTime() / 1000;
+            // const marchEnd = new Date('2025-04-01').getTime() / 1000;
+            //
+            // const response = await fetch(`https://track-joe.josephcorcoran.co.uk/api/strava.php?route=activities&after=${marchStart}&before=${marchEnd}`, {
+            //     method: 'GET',
+            //     credentials: 'include'
+            // });
+            //
+            // if (!response.ok) {
+            //     throw new Error('Failed to fetch activities');
+            // }
+            //
+            // const data: Activity[] = await response.json();
+            // activities = data.filter(activity => activity.type === 'Ride');
 
             totalDistance = activities.reduce((sum, activity) => sum + activity.distance, 0);
             totalTime = activities.reduce((sum, activity) => sum + activity.moving_time, 0);
